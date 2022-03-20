@@ -1,0 +1,72 @@
+select *
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+order by  2,3
+
+select *
+FROM `covid-data-exploration-344700.1111.CovidVaccination`
+order by  4,5
+
+select location,date,total_cases,new_cases,total_deaths,population
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+order by  1,2
+
+--countries with highest total cases
+select location,Max(cast(total_cases as int)) as total_cases_count
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+--where location =  'Sudan'
+where continent is not null
+group by location
+order by  total_cases_count desc
+
+--countries with highest deaths 
+select location,Max(cast(total_deaths as int)) as total_deaths_count
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+--where location =  'Sudan'
+where continent is not null
+group by location
+order by  total_deaths_count desc
+
+--continents with highest cases
+select continent,Max(cast(total_cases as int)) as total_cases_count
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+--where location =  'Sudan'
+where continent is not null
+group by continent
+order by  total_cases_count desc
+
+--continents with highest death cases
+select continent,Max(cast(total_deaths as int)) as total_deaths_count
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+--where location =  'Sudan'
+where continent is not null
+group by continent
+order by  total_deaths_count desc
+
+-- total cases vs total deths in Sudan
+select location,date,total_cases,total_deaths,(total_deaths/total_cases)*100 as deth_perc
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+where location =  'Sudan'
+order by  1,2
+
+-- perentage of population got infected by covid s in Sudan
+select location,date,population,total_cases,(total_cases/population)*100 as infection_per
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+where location =  'Sudan'
+order by  1,2
+
+-- perentage of population died due to covid s in Sudan
+select location,date,population,total_deaths ,(total_deaths/population)*100 as death_rate
+FROM `covid-data-exploration-344700.1111.CovidDeath`
+where location =  'Sudan'
+order by  1,2
+
+
+--joining Vaccination and deth tables
+
+SELECT d.continent, d.location,d.date,d.population,v.new_vaccinations
+from `covid-data-exploration-344700.1111.CovidDeath` d
+join `covid-data-exploration-344700.1111.CovidVaccination` v
+    on d.location = v.location
+    and d.date = v.date
+where d.continent is not null 
+order by 2,3   
